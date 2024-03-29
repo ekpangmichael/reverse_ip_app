@@ -1,0 +1,36 @@
+name: CI/CD
+on:
+  push:
+    branches:
+      - '*'
+jobs:
+  determine-environment:
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set_env.outputs.environment }}
+    steps:
+      - name: Set Environment Name
+        id: set_env
+        run: | 
+          if [[ $GITHUB_REF == 'refs/heads/dev' ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_REF == 'refs/heads/main' ]]; then
+            echo "environment=prod" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_REF == 'refs/heads/uat' ]]; then
+            echo "environment=uat" >> $GITHUB_OUTPUT
+          else
+            echo "environment=development" >> $GITHUB_OUTPUT
+          fi
+   
+  build_push_ecr:
+    needs: determine-environment
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/uat'
+    uses: ./.github/workflows/build_push_image.yaml
+    with:
+      repository: reverse_ip
+      environment: ${{ needs.determine-environment.outputs.environment }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  
