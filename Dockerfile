@@ -1,8 +1,9 @@
-FROM --platform=linux/arm64/v8 node:16-alpine
+FROM --platform=linux/arm64 node:16-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN yarn install --production
+
 COPY . .
+RUN yarn install --production
 RUN chown -R node:node /app
 USER node
 EXPOSE 4000
