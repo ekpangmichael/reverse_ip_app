@@ -1,4 +1,4 @@
-FROM --platform=linux/arm64/v8 node:16-alpine
+FROM node:16-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN yarn install --production
