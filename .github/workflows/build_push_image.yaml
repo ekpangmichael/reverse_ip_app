@@ -83,7 +83,6 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v2
 
     - name: Build and Tag
-      id: set-tag
       uses: docker/build-push-action@v2
       with:
         context: ${{ inputs.docker_path }}
@@ -95,6 +94,7 @@ jobs:
         platforms: linux/amd64,linux/arm64
 
     - name: Output image tag
+      id: set-tag
       run: |
         echo "image-tag=${{ inputs.image_tag || inputs.environment && format('{0}-{1}', inputs.environment, github.sha) || github.sha }}" >> $GITHUB_OUTPUT
         echo "imageTag=${{ inputs.image_tag || inputs.environment && format('{0}-{1}', inputs.environment, github.sha) || github.sha }}" >> $GITHUB_OUTPUT
