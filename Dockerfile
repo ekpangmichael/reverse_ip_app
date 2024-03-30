@@ -1,7 +1,7 @@
 FROM --platform=linux/arm64/v8 node:16-alpine
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --production
+RUN yarn install --production
 COPY . .
 RUN chown -R node:node /app
 USER node
