@@ -10,5 +10,5 @@ app.use(express.json());
 app.use('/', ipRoutes);
 
 app.listen(port, () => {
-  console.log(`Server running on portttt ${port}`);
+  console.log(`Server running on port ${port}`);
 });
