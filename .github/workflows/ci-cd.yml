@@ -39,7 +39,7 @@ jobs:
       - determine-environment
     name: Deploying reverse ip to ${{ needs.determine-environment.outputs.environment }}
     if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/uat'
-    uses: ./.github/workflows/deploy_argocd.yaml@main
+    uses: ./.github/workflows/deploy_argocd.yaml
     with:
       image-tag: ${{ needs.build_push_ecr.outputs.tag }}
       ecr_repository: reverse_ip
