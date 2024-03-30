@@ -7,3 +7,4 @@ RUN chown -R node:node /app
 USER node
 EXPOSE 4000
 CMD ["node", "server.js"]
+
