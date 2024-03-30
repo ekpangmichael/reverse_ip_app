@@ -91,7 +91,7 @@ jobs:
         push: true
         tags: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ inputs.image_tag || inputs.environment && format('{0}-{1}', inputs.environment, github.sha) || github.sha }}
         build-args: ${{ secrets.BUILD_ARGS }}
-        load: true 
+        load: false
         platforms: linux/amd64,linux/arm64
 
     - name: Output image tag
