@@ -1,0 +1,47 @@
+name: Deploy via ArgoCD
+on:
+  workflow_call:
+    inputs:
+      image-tag:
+        required: true
+        type: string
+      ecr_repository:
+        required: true
+        type: string
+      file_path:
+        required: true
+        type: string
+      origin_repository:
+        required: false
+        type: string
+        default: ${{ github.repository }}   
+    secrets:
+      GITOPS_TOKEN:
+        required: true
+jobs:
+  Deploy:
+    name: Deploy to ArgoCD
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone helm chart repository
+        uses: actions/checkout@v4
+        with:
+          repository: ekpangmichael/helm-chart
+          ref: main
+          token: ${{ secrets.GITOPS_TOKEN }}
+
+      - name: Update ArgoCD app
+        run: |
+          git config --global user.email "infra@demo.com"
+          git config --global user.name  "on-gitops"
+
+          echo "Deploying application with image ${{ inputs.image-tag }}"
+
+          sed -i "s/${{ inputs.ecr_repository }}:.*/${{ inputs.ecr_repository }}:${{ inputs.image-tag }}/gI" apps/${{ inputs.file_path }}
+
+          cd apps/
+
+          git pull
+          git add .
+          git commit -m "update image tag for ${{ inputs.origin_repository }}"
+          git push origin main
